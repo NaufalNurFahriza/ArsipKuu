@@ -369,9 +369,9 @@ export default function Home({ navigation }) {
 
           <View className="flex-col items-center">
             <TouchableOpacity
-              // onPress={() => {
-              //   setModalConvert(true);
-              // }}
+              onPress={() => {
+                setModalConvert(true);
+              }}
               >
               <LinearGradient
                 start={{ x: 0, y: 1 }}
