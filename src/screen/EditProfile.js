@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  StyleSheet,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -38,15 +39,13 @@ export default function EditProfile({ navigation }) {
     setModalPhoto(false);
   };
   return (
-    <View className="flex-1 bg-slate-200">
+    <View style={styles.container}>
       <ModalAddPhoto show={modalPhoto} onClose={handleCloseModal} setImgProfile={setImgProfile} />
-      <View className="w-full h-16 bg-white flex-row self-center items-center pl-3 shadow-md">
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="#243bbb" />
         </TouchableOpacity>
-        <Text className="ml-3 font-bold text-lg text-stone-600">
-          Edit Profile
-        </Text>
+        <Text style={styles.headerText}>Edit Profile</Text>
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -54,27 +53,25 @@ export default function EditProfile({ navigation }) {
         <ImageBackground
           source={require('../assets/images/Book_Pattern.png')}
           resizeMode="cover"
-          className="h-60">
+          style={styles.backgroundImage}>
           <LinearGradient
             start={{ x: 1, y: 0 }}
             end={{ x: 1, y: 1 }}
             colors={['rgba(5, 74, 122, 0.85)', 'rgba(10, 136, 225, 0.75)']}
-            className="px-6 py-6 h-60">
-            <View className="py-10 items-center">
+            style={styles.gradient}>
+            <View style={styles.profileContainer}>
               <Image
                 source={{ uri: imgProfile === '' ? loginData.imgProfile : imgProfile }}
-                className="w-28 h-28 object-contain my-3 border-2 border-black rounded-full"
+                style={styles.profileImage}
               />
-              <View className="bg-blue-500 items-center my-4 px-4 py-2 rounded-3xl">
+              <View style={styles.editPhotoContainer}>
                 <TouchableOpacity
                   onPress={() => {
                     setModalPhoto(true);
                   }}>
-                  <View className="flex-row items-center">
+                  <View style={styles.editPhotoButton}>
                     <MaterialIcons name="edit" size={20} color="white" />
-                    <Text className="text-base text-white font-medium ml-2">
-                      Edit Photo
-                    </Text>
+                    <Text style={styles.editPhotoText}>Edit Photo</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -82,46 +79,145 @@ export default function EditProfile({ navigation }) {
           </LinearGradient>
         </ImageBackground>
 
-        <View className="px-6 py-6">
-          <View className="mb-6">
-            <Text className="text-blue-700 font-bold">Nama</Text>
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Nama</Text>
             <TextInput
               placeholder="Name"
               defaultValue={loginData.name}
               onChangeText={Text => setName(Text)}
-              className="w-full mt-3 rounded-lg bg-slate-50 px-3"
+              style={styles.input}
               keyboardType="default"
             />
           </View>
 
-          <View className="mb-6">
-            <Text className="text-blue-700 font-bold">Email</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
             <TextInput
               placeholder="Email@gmail.com"
               defaultValue={loginData.email}
               onChangeText={Text => setEmail(Text)}
-              className="w-full mt-3 rounded-lg bg-slate-50 px-3"
+              style={styles.input}
               keyboardType="email-address"
             />
           </View>
 
-          <View className="mb-6">
-            <Text className="text-blue-700 font-bold">Phone Number</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Phone Number</Text>
             <TextInput
               placeholder="080040008000"
               defaultValue={loginData.phoneNumber}
               onChangeText={Text => setPhoneNumber(Text)}
-              className="w-full mt-3 rounded-lg bg-slate-50 px-3"
+              style={styles.input}
               keyboardType="numeric"
             />
           </View>
           <TouchableOpacity
             onPress={tambahData}
-            className="w-full rounded-lg my-6 py-3 bg-blue-700 justify-center items-center">
-            <Text className="text-white font-bold text-lg">Save</Text>
+            style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f1f5f9',
+  },
+  header: {
+    width: '100%',
+    height: 64,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  headerText: {
+    marginLeft: 12,
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#292524',
+  },
+  backgroundImage: {
+    height: 240,
+  },
+  gradient: {
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    height: 240,
+  },
+  profileContainer: {
+    paddingVertical: 40,
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+    borderWidth: 1,
+    borderColor: 'blue',
+    marginBottom: 12,
+  },
+  editPhotoContainer: {
+    backgroundColor: '#3b82f6',
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  editPhotoButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  editPhotoText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+  formContainer: {
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+  },
+  inputContainer: {
+    marginBottom: 24,
+  },
+  inputLabel: {
+    color: '#3b82f6',
+    fontWeight: 'bold',
+  },
+  input: {
+    width: '100%',
+    marginTop: 12,
+    borderRadius: 8,
+    backgroundColor: '#f8fafb',
+    paddingHorizontal: 12,
+  },
+  saveButton: {
+    width: '100%',
+    borderRadius: 8,
+    marginTop: 24,
+    paddingVertical: 12,
+    backgroundColor: '#3b82f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+});

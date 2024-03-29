@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
-import { View, Modal, TouchableOpacity, Image } from 'react-native';
+import { View, Modal, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import RNFS from 'react-native-fs';
 
 export const ModalImage = ({ item, setItem }) => {
@@ -30,11 +30,33 @@ export const ModalImage = ({ item, setItem }) => {
   // console.log('img', item2)
   return (
     <Modal transparent visible={Show()} onRequestClose={() => setItem('')}>
-      <TouchableOpacity className=" flex flex-1 justify-center items-center bg-black/[.8] p-9" onPress={() => setItem('')}>
-        <View className=" flex flex-1 justify-center items-center p-9">
-          <Image source={{ uri: item2 }} height={350} width={350} />
+      <TouchableOpacity style={styles.modalContainer} onPress={() => setItem('')}>
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: item2 }} style={styles.image} />
         </View>
       </TouchableOpacity>
     </Modal>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    paddingHorizontal: 36,
+    paddingVertical: 36,
+  },
+  imageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 36,
+    paddingVertical: 36,
+  },
+  image: {
+    height: 350,
+    width: 350,
+  },
+});

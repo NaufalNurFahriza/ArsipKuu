@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
-import {View, Image} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Image, StyleSheet } from 'react-native';
 
-const Splash = ({navigation}) => {
+const Splash = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       navigation.replace('AuthNavigation');
@@ -9,12 +9,27 @@ const Splash = ({navigation}) => {
   }, []);
 
   return (
-    <View className="flex-1 bg-white justify-center items-center ">
+    <View style={styles.container}>
       <Image
         source={require('../assets/images/splashLogo.png')}
-        className="W-[150] H-[174] object-contain"
+        style={styles.logo}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 150,
+    height: 174,
+    resizeMode: 'contain',
+  },
+});
+
 export default Splash;

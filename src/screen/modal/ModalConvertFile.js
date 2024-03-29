@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {View, Modal, TouchableOpacity, Text, Dimensions} from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+import React, { useState } from 'react';
+import { View, Modal, TouchableOpacity, Text, Dimensions, StyleSheet } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 import RNImageToPdf from 'react-native-image-to-pdf';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -59,37 +59,30 @@ export const ModalConvertFile = ({ show, onClose, onConvertSuccess }) => {
     }
   };
   
-  
   return (
     <Modal transparent visible={show} onRequestClose={onClose}>
-      <View className="flex-1 bg-slate-100">
-        <View className="w-full h-16 bg-white flex-row self-center items-center pl-3 shadow-md">
-        <TouchableOpacity onPress={() => { onClose(); setImageData(null); }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => { onClose(); setImageData(null); }}>
             <Ionicons name="arrow-back" size={24} color="#243bbb" />
           </TouchableOpacity>
-          <Text className="ml-3 font-bold text-lg text-stone-600">
-            Convert File
-          </Text>
+          <Text style={styles.headerText}>Convert File</Text>
         </View>
-        <View className="px-6 py-6 items-center">
-          <Text className="text-stone-900 font-semibold text-lg text-center pt-10 pb-8">
-            Choose Image from Gallery
-          </Text>
+        <View style={styles.contentContainer}>
+          <Text style={styles.title}>Choose Image from Gallery</Text>
 
           <TouchableOpacity
             onPress={openImageLibraryPDF}
-            className="w-56 rounded-lg py-3 border-blue-700 border-2 justify-center items-center">
-            <Text className="text-blue-700 font-semibold text-lg">
-              Select File
-            </Text>
+            style={styles.selectFileButton}>
+            <Text style={styles.selectFileButtonText}>Select File</Text>
           </TouchableOpacity>
 
           {imageData && (
-            <View className="bg-white px-4 py-6 w-80 my-9">
-              <View className="flex-row justify-between py-3">
-                <View className="flex-row items-center">
+            <View style={styles.imageContainer}>
+              <View style={styles.imageInfo}>
+                <View style={styles.imageInfoRow}>
                   <MaterialIcons name="image" size={24} color="#87CEEB" />
-                  <Text className="pl-5 font-medium text-base text-gray-600">
+                  <Text style={styles.imageFileName}>
                     {imageData.fileName.length > 20
                       ? `${imageData.fileName.substring(0, 20)}...`
                       : imageData.fileName}
@@ -103,14 +96,105 @@ export const ModalConvertFile = ({ show, onClose, onConvertSuccess }) => {
           )}
 
           <TouchableOpacity
-            className="rounded-lg my-6 py-3 bg-red-700 justify-center items-center w-80"
+            style={styles.convertButton}
             onPress={convertToPDF}>
-            <Text className="text-white font-semibold text-lg">
-              Convert to PDF
-            </Text>
+            <Text style={styles.convertButtonText}>Convert to PDF</Text>
           </TouchableOpacity>
         </View>
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f1f5f9',
+  },
+  header: {
+    width: '100%',
+    height: 64,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  headerText: {
+    marginLeft: 12,
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#292524',
+  },
+  contentContainer: {
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignItems: 'center',
+  },
+  title: {
+    color: '#292524',
+    fontWeight: '600',
+    fontSize: 18,
+    textAlign: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+  },
+  selectFileButton: {
+    width: 216,
+    borderRadius: 8,
+    paddingVertical: 12,
+    borderWidth: 2,
+    borderColor: '#3b82f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectFileButtonText: {
+    color: '#3b82f6',
+    fontWeight: '600',
+    fontSize: 18,
+  },
+  imageContainer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    width: 320,
+    marginVertical: 36,
+  },
+  imageInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  imageInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  imageFileName: {
+    paddingLeft: 20,
+    fontWeight: '500',
+    fontSize: 16,
+    color: '#4b5563',
+  },
+  convertButton: {
+    borderRadius: 8,
+    marginVertical: 24,
+    paddingVertical: 12,
+    backgroundColor: '#ef4444',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 320,
+  },
+  convertButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 18,
+  },
+});

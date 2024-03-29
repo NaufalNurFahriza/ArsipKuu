@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,17 +8,20 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  StyleSheet,
+  Platform,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-const Login = ({navigation, route}) => {
+import { useDispatch, useSelector } from 'react-redux';
+
+const Login = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const {loginData, isLoggedIn} = useSelector(state => state.login);
+  const { loginData, isLoggedIn } = useSelector(state => state.login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
     console.log('login userCheck', isLoggedIn);
-    if (isLoggedIn != false) {
+    if (isLoggedIn !== false) {
       console.log('login user', isLoggedIn);
       navigation.replace('bottom');
     } else {
@@ -27,10 +30,10 @@ const Login = ({navigation, route}) => {
   }, []);
 
   return (
-    <View className="flex-1 bg-slate-100">
+    <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 10}}>
+        contentContainerStyle={{ paddingBottom: 10 }}>
         <KeyboardAvoidingView
           behavior="padding"
           enabled
@@ -40,52 +43,46 @@ const Login = ({navigation, route}) => {
             style={{
               width: Dimensions.get('window').width,
               height: 310,
-            }}/>
-          <View className="w-full bg-white rounded-t-2xl px-5 pt-7 -mt-5">
-            <Text className="text-gray-900 font-bold text-2xl my-4">
-              Welcome, Please Login First
-            </Text>
-            <Text className="text-blue-900 font-bold text-sm">Email</Text>
+            }}
+          />
+          <View style={styles.formContainer}>
+            <Text style={styles.title}>Welcome, Please Login First</Text>
+            <Text style={styles.label}>Email</Text>
             <TextInput
               placeholder="Masukkan Email"
               onChangeText={text => setEmail(text)}
-              className="my-4 w-full rounded-lg bg-slate-100 px-3"
+              style={styles.input}
               keyboardType="email-address"
             />
-            <Text className="text-blue-900 font-bold text-sm">Password</Text>
+            <Text style={styles.label}>Password</Text>
             <TextInput
               placeholder="Masukkan Password"
               secureTextEntry={true}
               onChangeText={text => setPassword(text)}
-              className="my-4 w-full rounded-lg bg-slate-100 px-3"
+              style={styles.input}
             />
             <TouchableOpacity
-              className="w-full rounded-lg my-6 py-3 bg-blue-700 justify-center items-center"
+              style={styles.button}
               onPress={() => {
                 if (
                   loginData.email === email &&
-                  loginData.email != '' &&
+                  loginData.email !== '' &&
                   loginData.password === password &&
-                  loginData.password != ''
+                  loginData.password !== ''
                 ) {
                   console.log('login user', isLoggedIn);
-                  dispatch({type: 'LOGIN'});
+                  dispatch({ type: 'LOGIN' });
                   navigation.replace('bottom');
                 }
-              }}
-              >
-              <Text className="text-white font-bold text-lg">Login</Text>
+              }}>
+              <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            <View className="w-full justify-center items-center my-3 flex-row">
-              <Text className="text-md text-gray-600">
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>
                 Don't Have An Account yet?
               </Text>
-              <TouchableOpacity>
-                <Text
-                  className="text-md text-blue-900 font-medium ml-1"
-                  onPress={() => navigation.navigate('Register')}>
-                  Register
-                </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.registerLink}>Register</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -94,5 +91,69 @@ const Login = ({navigation, route}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  formContainer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingTop: 28,
+    marginTop: -20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  title: {
+    color: '#333',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 16,
+  },
+  label: {
+    color: '#007bff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginVertical: 12,
+    fontSize: 16,
+  },
+  button: {
+    width: '100%',
+    backgroundColor: '#007bff',
+    borderRadius: 8,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  registerText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  registerLink: {
+    color: '#007bff',
+    fontWeight: 'bold',
+    marginLeft: 4,
+  },
+});
 
 export default Login;

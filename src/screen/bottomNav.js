@@ -1,18 +1,18 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Home from './Home';
 import * as React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from './Profile';
 import Files from './Files';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Home from './Home';
+
 const Tab = createBottomTabNavigator();
 
-function MyTabBar({state, descriptors, navigation}) {
+function MyTabBar({ state, descriptors, navigation }) {
   return (
-    <View className="flex-row h-16 content-center bg-white p-2"
->
+    <View style={styles.tabBarContainer}>
       {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
+        const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
@@ -31,7 +31,7 @@ function MyTabBar({state, descriptors, navigation}) {
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate({name: route.name, merge: true});
+            navigation.navigate({ name: route.name, merge: true });
           }
         };
 
@@ -50,20 +50,21 @@ function MyTabBar({state, descriptors, navigation}) {
 
         return (
           <TouchableOpacity
+            key={index}
             accessibilityRole="button"
-            accessibilityState={isFocused ? {selected: true} : {}}
+            accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            className="flex-1 self-center h-10 w-10 items-center"
->
+            style={styles.tabBarButton}
+          >
             <Icon
               name={LabelIcon[label]}
               size={20}
               color={isFocused ? '#243bbb' : '#D8D8D8'}
             />
-            <Text style={{color: isFocused ? '#243bbb' : '#D8D8D8'}}>
+            <Text style={[styles.tabBarText, { color: isFocused ? '#243bbb' : '#D8D8D8' }]}>
               {label}
             </Text>
           </TouchableOpacity>
@@ -77,12 +78,33 @@ function MyTabs(params) {
   return (
     <Tab.Navigator
       tabBar={props => <MyTabBar {...props} />}
-      screenOptions={{headerShown: false}}
-      initialRouteName="Home">
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Home"
+    >
       <Tab.Screen name="Home" component={Home} />
       {/* <Tab.Screen name="Files" component={Files} /> */}
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarContainer: {
+    flexDirection: 'row',
+    height: 60,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 10,
+    paddingHorizontal: 2,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  tabBarButton: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  tabBarText: {
+    fontSize: 12,
+  },
+});
+
 export default MyTabs;
