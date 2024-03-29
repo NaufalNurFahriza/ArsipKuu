@@ -34,7 +34,6 @@ export default function ConvertFile({ navigation }) {
     }
   };
 
-
   const handleImageSelection = (image) => {
     setImageData(image);
   };

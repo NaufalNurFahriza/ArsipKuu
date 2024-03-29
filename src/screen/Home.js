@@ -9,6 +9,7 @@ import {
   FlatList,
   ImageBackground,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
@@ -203,20 +204,16 @@ export default function Home({ navigation }) {
     const folderPath =
       currentPath !== RNFS.DocumentDirectoryPath
         ? currentPath
-        : RNFS.DocumentDirectoryPath; // Menggunakan path folder utama jika di root folder
-    const fileNamePrefix = 'PDF_'; // Awalan nama file PDF
+        : RNFS.DocumentDirectoryPath;
+    const fileNamePrefix = 'PDF_';
     const currentDate = new Date();
-    const seconds = currentDate.getSeconds().toString().padStart(2, '0'); // Detik dengan dua digit
-    // Membuat nama file PDF baru dengan detik saat ini
+    const seconds = currentDate.getSeconds().toString().padStart(2, '0');
     const newFileName = `${fileNamePrefix}${seconds}.pdf`;
-    const destinationPath = `${folderPath}/${newFileName}`; // Path untuk menyimpan file PDF
+    const destinationPath = `${folderPath}/${newFileName}`;
 
     try {
-      // Mengecek apakah file dengan nama yang sama sudah ada di folder
       const isFileExists = await RNFS.exists(destinationPath);
       let finalDestinationPath = destinationPath;
-
-      // Jika file dengan nama yang sama sudah ada, tambahkan angka unik ke nama file
       if (isFileExists) {
         let count = 1;
         let uniqueFileName = newFileName;
@@ -226,22 +223,21 @@ export default function Home({ navigation }) {
         finalDestinationPath = `${folderPath}/${uniqueFileName}`;
       }
 
-      // Simpan file PDF ke path tujuan
       await RNFS.moveFile(pdfFilePath, finalDestinationPath);
       console.log('PDF file saved:', finalDestinationPath);
 
-      // Menambahkan file PDF baru ke daftar folder dengan simulasi
       const pdfFile = {
-        name: finalDestinationPath.split('/').pop(), // Menggunakan nama file yang sudah diubah
-        path: finalDestinationPath, // Gunakan path yang sudah diubah
-        isDirectory: () => false, // Bukan direktori
+        name: finalDestinationPath.split('/').pop(),
+        path: finalDestinationPath,
+        isDirectory: () => false,
       };
-      setFolders([...folders, pdfFile]); // Tambahkan file baru ke daftar folder
+      setFolders([...folders, pdfFile]);
     } catch (error) {
       console.error('Error saving PDF file:', error);
     }
     setModalConvert(false);
   };
+  
   const [img, setImg] = useState('')
   const [pdf, setPdf] = useState('')
   const navigateToFolder = item => {
@@ -255,7 +251,7 @@ export default function Home({ navigation }) {
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        className="flex flex-row items-center"
+        style={styles.itemContainer}
         onPress={() => navigateToFolder(item)}
         onLongPress={() => {
           Alert.alert(
@@ -274,8 +270,8 @@ export default function Home({ navigation }) {
             ],
           );
         }}>
-        <View className="w-full py-5 bg-white flex-row items-center px-4 border-b-2 border-b-slate-100 rounded-sm">
-          <View>
+        <View style={styles.itemContent}>
+          <View style={styles.iconContainer}>
             {item.isDirectory() ? (
               <FontAwesome name="folder" size={24} color="#F8D775" />
             ) : item.name.toLowerCase().endsWith('.jpg') ||
@@ -287,14 +283,14 @@ export default function Home({ navigation }) {
               <FontAwesome name="file-text" size={24} color="gray" />
             )}
           </View>
-          <Text className="text-sm font-medium ml-4">{item.name}</Text>
+          <Text style={styles.itemText}>{item.name}</Text>
         </View>
       </TouchableOpacity>
-    )
+    );
   };
 
   return (
-    <View className="flex-1 bg-slate-100">
+    <View style={styles.container}>
       <ModalImage item={img} setItem={setImg} />
       <ModalPdf item={pdf} setItem={setPdf} />
       <ModalNewFolder
@@ -316,116 +312,212 @@ export default function Home({ navigation }) {
         onClose={() => setModalConvert(false)}
         onConvertSuccess={onConvertSuccess}
       />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 10 }}>
-        <ImageBackground
-          source={require('../assets/images/ArsipBg.png')}
-          resizeMode="cover"
-          className="px-6 py-6 h-44">
-          <Image
-            source={require('../assets/images/ArsipkuWhite.png')}
-            style={{ width: 106, height: 26 }}
-          />
-        </ImageBackground>
+          <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.scrollViewContainer}>
+      <ImageBackground
+        source={require('../assets/images/ArsipBg.png')}
+        resizeMode="cover"
+        style={styles.imageBackground}>
+        <Image
+          source={require('../assets/images/ArsipkuWhite.png')}
+          style={styles.logo}
+        />
+      </ImageBackground>
 
-        <View className="bg-slate-50 px-5 py-4 flex-row items-center justify-around">
-          <View className="flex-col items-center">
-            <TouchableOpacity
-              onPress={() => {
-                setModalFolder(true);
-              }}>
-              <LinearGradient
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
-                colors={['#F5C62C', '#FD5B4B']}
-                className="items-center justify-center rounded-full w-[60px] h-[60px]">
-                <AntDesign name="addfolder" size={24} color="white" />
-              </LinearGradient>
-            </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <View style={styles.buttonColumn}>
+          <TouchableOpacity
+            onPress={() => {
+              setModalFolder(true);
+            }}>
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 0 }}
+              colors={['#F5C62C', '#FD5B4B']}
+              style={styles.button}>
+              <AntDesign name="addfolder" size={24} color="white" />
+            </LinearGradient>
+          </TouchableOpacity>
 
-            <Text className="text-sm font-semibold text-stone-900 pt-4">
-              New Folder
-            </Text>
-          </View>
-          <View className="flex-col items-center">
-            <TouchableOpacity
-              onPress={() => {
-                setModalFile(true);
-              }}>
-              <LinearGradient
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
-                colors={['#D8E474', '#62C654']}
-                className="items-center justify-center rounded-full w-[60px] h-[60px]">
-                <FontAwesome name="file-photo-o" size={24} color="white" />
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <Text className="text-sm font-semibold text-stone-900 pt-4">
-              Add Photo
-            </Text>
-          </View>
-
-          <View className="flex-col items-center">
-            <TouchableOpacity
-              onPress={() => {
-                setModalConvert(true);
-              }}
-              >
-              <LinearGradient
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
-                colors={['#8FF8D4', '#16AAFB']}
-                className="items-center justify-center rounded-full w-[60px] h-[60px]">
-                <AntDesign name="pdffile1" size={24} color="white" />
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <Text className="text-sm font-semibold text-stone-900 pt-4">
-              Convert PDF
-            </Text>
-          </View>
+          <Text style={styles.buttonText}>New Folder</Text>
         </View>
+        <View style={styles.buttonColumn}>
+          <TouchableOpacity
+            onPress={() => {
+              setModalFile(true);
+            }}>
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 0 }}
+              colors={['#D8E474', '#62C654']}
+              style={styles.button}>
+              <FontAwesome name="file-photo-o" size={24} color="white" />
+            </LinearGradient>
+          </TouchableOpacity>
 
-        <View className="px-5 py-5">
-          <View className="pb-5 flex-row items-center justify-between">
-            <View className="flex-row items-center">
-              <TouchableOpacity className="px-4" onPress={navigateBack}>
-                <AntDesign
-                  name="arrowleft"
-                  size={24}
-                  className="bg-stone-900"
-                />
-              </TouchableOpacity>
-              <View style={{ flexDirection: 'column' }}>
-                <Text className="text-lg text-stone-900 capitalize">
-                  {currentPath.split('/').pop()}
-                </Text>
-              </View>
+          <Text style={styles.buttonText}>Add Photo</Text>
+        </View>
+        <View style={styles.buttonColumn}>
+          <TouchableOpacity
+            onPress={() => {
+              setModalConvert(true);
+            }}>
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 0 }}
+              colors={['#8FF8D4', '#16AAFB']}
+              style={styles.button}>
+              <AntDesign name="pdffile1" size={24} color="white" />
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <Text style={styles.buttonText}>Convert PDF</Text>
+        </View>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={navigateBack}>
+            <AntDesign name="arrowleft" size={24} style={styles.backIcon} />
+          </TouchableOpacity>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+              {currentPath.split('/').pop()}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={sortData}>
+            <View style={styles.sortContainer}>
+              <Text style={styles.sortText}>
+                {sortDirection === 'asc' ? 'Z - A' : 'A - Z'}
+              </Text>
+              <AntDesign
+                name={sortDirection === 'asc' ? 'caretdown' : 'caretup'}
+                size={16}
+                style={styles.sortIcon}
+              />
             </View>
-
-            <TouchableOpacity onPress={sortData}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text className="text-base text-stone-900 font-semibold pr-3">
-                  {sortDirection === 'asc' ? 'Z - A' : 'A - Z'}
-                </Text>
-                <AntDesign
-                  name={sortDirection === 'asc' ? 'caretdown' : 'caretup'}
-                  size={16}
-                  className="bg-stone-900"
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={folders}
-            renderItem={renderItem}
-            keyExtractor={item => item.path}
-          />
+          </TouchableOpacity>
         </View>
+
+        <FlatList
+          data={folders}
+          renderItem={renderItem}
+          keyExtractor={item => item.path}
+        />
+      </View>
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f1f5f9',
+  },
+  scrollViewContainer: {
+    paddingBottom: 10,
+  },
+  imageBackground: {
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    height: 176,
+    
+  },
+  logo: {
+    width: 106,
+    height: 26,
+  },
+  buttonContainer: {
+    backgroundColor: '#F8FAFC',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { 
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84, 
+    elevation: 5,
+  },
+  buttonColumn: {
+    alignItems: 'center',
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1c1917',
+    paddingTop: 16,
+  },
+  contentContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  headerContainer: {
+    paddingBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backButton: {
+    paddingHorizontal: 16,
+  },
+  backIcon: {
+    backgroundColor: '#D3D3D3',
+  },
+  titleContainer: {
+    flexDirection: 'column',
+  },
+  title: {
+    fontSize: 20,
+    color: '#696969',
+    textTransform: 'capitalize',
+  },
+  sortContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sortText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingRight: 12,
+    color: '#696969',
+  },
+  sortIcon: {
+    backgroundColor: '#D3D3D3',
+  },
+  itemContainer: {
+    width: '100%',
+    paddingVertical: 16,
+    backgroundColor: '#ffffff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    borderBottomWidth: 3,
+    borderBottomColor: '#f1f5f9',
+    borderRadius: 4,
+  },
+  itemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    marginRight: 10,
+  },
+  itemText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});

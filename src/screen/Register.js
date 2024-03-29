@@ -1,16 +1,25 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Platform,
+} from 'react-native';
+import { useDispatch } from 'react-redux';
 
-import React, {useState} from 'react';
-import {View, Text, KeyboardAvoidingView, Image, TouchableOpacity, Dimensions,} from 'react-native';
-import {ScrollView, TextInput} from 'react-native-gesture-handler';
-import {useDispatch, useSelector} from 'react-redux';
-
-const Register = ({navigation}) => {
+const Register = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNUmber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const {loginData} = useSelector(state => state.login);
   const dispatch = useDispatch();
+
   const tambahData = () => {
     const data = {
       name: name ? name : 'Agus Susanto',
@@ -20,74 +29,64 @@ const Register = ({navigation}) => {
         'https://i.pinimg.com/564x/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.jpg',
       password: password ? password : '123123',
     };
-    dispatch({type: 'ADD_DATA_LOGIN', data: data});
+    dispatch({ type: 'ADD_DATA_LOGIN', data: data });
     navigation.replace('bottom');
   };
+
   return (
-    <View className="flex-1 bg-slate-100">
+    <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 10}}>
+        contentContainerStyle={styles.scrollView}>
         <KeyboardAvoidingView
           behavior="padding"
           enabled
           keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
           <Image
             source={require('../assets/images/Book_Pattern4.png')}
-            style={{
-              width: Dimensions.get('window').width,
-              height: 220,
-            }}
+            style={styles.image}
           />
-          <View className="w-full bg-white rounded-t-2xl px-5 pt-7 -mt-5">
-            <Text className="text-gray-900 font-bold text-2xl my-4">
+          <View style={styles.formContainer}>
+            <Text style={styles.title}>
               Welcome, Please create your account
             </Text>
-            <Text className="text-blue-900 font-bold text-sm">Name</Text>
+            <Text style={styles.label}>Name</Text>
             <TextInput
               placeholder="Masukkan Nama"
               onChangeText={text => setName(text)}
-              className="my-4 w-full rounded-lg bg-slate-100 px-3"
+              style={styles.input}
               keyboardType="default"
             />
-            <Text className="text-blue-900 font-bold text-sm">Email</Text>
+            <Text style={styles.label}>Email</Text>
             <TextInput
               placeholder="Masukkan Email"
               onChangeText={text => setEmail(text)}
-              className="my-4 w-full rounded-lg bg-slate-100 px-3"
+              style={styles.input}
               keyboardType="email-address"
             />
-            <Text className="text-blue-900 font-bold text-sm">Password</Text>
+            <Text style={styles.label}>Password</Text>
             <TextInput
               placeholder="Masukkan Password"
               onChangeText={text => setPassword(text)}
               secureTextEntry={true}
-              className="my-4 w-full rounded-lg bg-slate-100 px-3"
+              style={styles.input}
             />
-            <Text className="text-blue-900 font-bold text-sm">Phone Number</Text>
+            <Text style={styles.label}>Phone Number</Text>
             <TextInput
               placeholder="Masukkan Nomor Handphone"
-              onChangeText={text => setPhoneNUmber(text)}
-              className="my-4 w-full rounded-lg bg-slate-100 px-3"
+              onChangeText={text => setPhoneNumber(text)}
+              style={styles.input}
               keyboardType="numeric"
             />
             <TouchableOpacity
-              className="w-full rounded-lg my-6 py-3 bg-blue-700 justify-center items-center"
-              onPress={tambahData}
-              // onPress={() => navigation.navigate('BottomNav')}
-              >
-              <Text className="text-white font-bold text-lg">Register</Text>
+              style={styles.button}
+              onPress={tambahData}>
+              <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
-            <View className="w-full justify-center items-center my-3 flex-row">
-              <Text className="text-md text-gray-600">
-                already have an account?
-              </Text>
-              <TouchableOpacity>
-                <Text
-                  className="text-md text-blue-900 font-medium ml-1"
-                  onPress={() => navigation.navigate('Login')}>
-                  Login
-                </Text>
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>already have an account?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.loginLink}>Login</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -96,5 +95,76 @@ const Register = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollView: {
+    paddingBottom: 10,
+  },
+  image: {
+    width: Dimensions.get('window').width,
+    height: 220,
+  },
+  formContainer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingTop: 28,
+    marginTop: -20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  title: {
+    color: '#333',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 16,
+  },
+  label: {
+    color: '#007bff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginVertical: 12,
+    fontSize: 16,
+  },
+  button: {
+    width: '100%',
+    backgroundColor: '#007bff',
+    borderRadius: 8,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  loginText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  loginLink: {
+    color: '#007bff',
+    fontWeight: 'bold',
+    marginLeft: 4,
+  },
+});
 
 export default Register;
