@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   editPhotoContainer: {
     backgroundColor: '#3b82f6',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 28,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 12,
