@@ -1,38 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { View, Modal, TouchableOpacity, StyleSheet } from 'react-native';
-import RNFS from 'react-native-fs';
+import React from 'react';
+import { View, Modal, StyleSheet } from 'react-native';
+import { Pdf } from 'react-native-pdf';
 
-export const ModalPdf = ({ item, setItem }) => {
-  console.log('pdf', item);
-  const [item2, setItem2] = useState('');
-  const Show = () => {
-    if (item === '') {
-      return false;
-    } else {
-      return true;
-    }
-  };
-  const handle = async () => {
-    RNFS.readFile(item, 'base64')
-      .then(data => {
-        setItem2('data:application/pdf;base64,' + data);
-        console.log('pdf', 'data:application/pdf;base64,' + data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-  useEffect(() => {
-    handle();
-  }, [item]);
-  console.log('pdf', item2);
+const ModalPdf = ({ visible, pdfPath, onClose }) => {
   return (
-    <Modal transparent visible={Show()} onRequestClose={() => setItem('')}>
-      <TouchableOpacity style={styles.modalContainer} onPress={() => setItem('')}>
-        <View style={styles.contentContainer}>
-          {/* <Image source={{ uri: item3 }} height={300} width={300} /> */}
+    <Modal transparent visible={visible} onRequestClose={onClose}>
+      <View style={styles.modalContainer}>
+        <View style={styles.pdfContainer}>
+          {/* Komponen Pdf untuk menampilkan file PDF */}
+          <Pdf source={{ uri: pdfPath }} style={styles.pdf} />
         </View>
-      </TouchableOpacity>
+      </View>
     </Modal>
   );
 };
@@ -42,15 +20,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    paddingHorizontal: 36,
-    paddingVertical: 36,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  contentContainer: {
+  pdfContainer: {
+    width: '80%',
+    height: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  pdf: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 36,
-    paddingVertical: 36,
+    width: '100%',
   },
 });
+
+export default ModalPdf;

@@ -38,6 +38,7 @@ export default function Home({ navigation }) {
     getAllFolders(currentPath);
   }, [currentPath]);
 
+
   const getAllFolders = path => {
     RNFS.readDir(path)
       .then(result => {
@@ -210,7 +211,7 @@ export default function Home({ navigation }) {
     const seconds = currentDate.getSeconds().toString().padStart(2, '0');
     const newFileName = `${fileNamePrefix}${seconds}.pdf`;
     const destinationPath = `${folderPath}/${newFileName}`;
-
+  
     try {
       const isFileExists = await RNFS.exists(destinationPath);
       let finalDestinationPath = destinationPath;
@@ -222,10 +223,10 @@ export default function Home({ navigation }) {
         }
         finalDestinationPath = `${folderPath}/${uniqueFileName}`;
       }
-
+  
       await RNFS.moveFile(pdfFilePath, finalDestinationPath);
-      console.log('PDF file saved:', finalDestinationPath);
-
+      console.log('PDF file saved:', finalDestinationPath); // Print the saved PDF file path
+  
       const pdfFile = {
         name: finalDestinationPath.split('/').pop(),
         path: finalDestinationPath,
@@ -236,15 +237,17 @@ export default function Home({ navigation }) {
       console.error('Error saving PDF file:', error);
     }
     setModalConvert(false);
-  };
+  };  
   
   const [img, setImg] = useState('')
-  const [pdf, setPdf] = useState('')
   const navigateToFolder = item => {
-    {
-      item.isDirectory() ? (setCurrentPath(item.path)) :
-        item.name.toLowerCase().endsWith('.jpg') || item.name.toLowerCase().endsWith('.png') ? (setImg(item.path)) :
-          item.name.toLowerCase().endsWith('.pdf') ? (setPdf(item.path)) : ('')
+    if (item.isDirectory()) {
+      setCurrentPath(item.path);
+    } else if (item.name.toLowerCase().endsWith('.pdf')) {
+      // Tambahkan logika untuk membuka file PDF di sini
+      navigation.navigate('PdfViewer', { pdfPath: item.path });
+    } else if (item.name.toLowerCase().endsWith('.jpg') || item.name.toLowerCase().endsWith('.png')) {
+      setImg(item.path);
     }
   };
 
@@ -274,8 +277,7 @@ export default function Home({ navigation }) {
           <View style={styles.iconContainer}>
             {item.isDirectory() ? (
               <FontAwesome name="folder" size={24} color="#F8D775" />
-            ) : item.name.toLowerCase().endsWith('.jpg') ||
-              item.name.toLowerCase().endsWith('.png') ? (
+            ) : item.name.toLowerCase().endsWith('.jpg') || item.name.toLowerCase().endsWith('.png') ? (
               <FontAwesome name="image" size={20} color="#87CEEB" />
             ) : item.name.toLowerCase().endsWith('.pdf') ? (
               <FontAwesome name="file-pdf-o" size={24} color="red" />
@@ -292,7 +294,6 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       <ModalImage item={img} setItem={setImg} />
-      <ModalPdf item={pdf} setItem={setPdf} />
       <ModalNewFolder
         show={modalFolder}
         onClose={() => setModalFolder(false)}
@@ -475,7 +476,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   backIcon: {
-    backgroundColor: '#D3D3D3',
+
   },
   titleContainer: {
     flexDirection: 'column',
@@ -496,7 +497,7 @@ const styles = StyleSheet.create({
     color: '#696969',
   },
   sortIcon: {
-    backgroundColor: '#D3D3D3',
+
   },
   itemContainer: {
     width: '100%',

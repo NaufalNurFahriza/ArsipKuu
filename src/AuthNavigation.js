@@ -6,10 +6,11 @@ import Register from './screen/Register';
 import MyTabs from './screen/bottomNav';
 import Routing from './Routing';
 import About from './screen/About';
-import ConvertFile from './screen/ConvertFile';
+import ConvertFile from './screen/PdfViewer';
 import { ModalMenu } from './screen/modal/ModalMenu';
 import { ModalNewFolder } from './screen/modal/ModalNewFolder';
 import { ModalAddFile } from './screen/modal/ModalAddFile';
+import PdfViewer from './screen/PdfViewer';
 
 const Stack = createStackNavigator();
 function AuthNavigation() {
@@ -26,7 +27,7 @@ function AuthNavigation() {
       <Stack.Screen name="Routing" component={Routing} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="About" component={About} />
-      <Stack.Screen name="ConvertFile" component={ConvertFile} />
+      <Stack.Screen name="PdfViewer" component={PdfViewer} />
       <Stack.Screen name="ModalMenu" component={ModalMenu} />
       <Stack.Screen name="ModalNewFolder" component={ModalNewFolder} />
       <Stack.Screen name="ModalAddFile" component={ModalAddFile} />
