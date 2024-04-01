@@ -530,7 +530,9 @@ const styles = StyleSheet.create({
   backButton: {
     paddingHorizontal: 16,
   },
-  backIcon: {},
+  backIcon: {
+    tintColor:'#000'
+  },
   titleContainer: {
     flexDirection: 'column',
   },
