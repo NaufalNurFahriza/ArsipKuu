@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,9 +16,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import {ModalMenu} from './modal/ModalMenu';
+import { ModalMenu } from './modal/ModalMenu';
 
-const Files = ({navigation}) => {
+const Files = ({ navigation }) => {
   const [currentPath, setCurrentPath] = useState(RNFS.DocumentDirectoryPath);
   const [folders, setFolders] = useState([]);
   const [folderName, setFolderName] = useState('');
@@ -130,7 +130,7 @@ const Files = ({navigation}) => {
       includeBase64: false,
       saveToPhotos: true, // Menyimpan ke galeri setelah diambil
     };
-  
+
     launchCamera(options, response => {
       if (response.didCancel) {
         console.log('User cancelled camera picker');
@@ -147,7 +147,7 @@ const Files = ({navigation}) => {
       }
     });
   };
-  
+
   const openImageLibrary = () => {
     const options = {
       mediaType: 'photo',
@@ -156,7 +156,7 @@ const Files = ({navigation}) => {
       quality: 1,
       includeBase64: false,
     };
-  
+
     launchImageLibrary(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -173,13 +173,13 @@ const Files = ({navigation}) => {
       }
     });
   };
-  
+
   const saveImageAsPng = async asset => {
     const sourcePath = asset.uri; // Path dari gambar yang diambil
     const fileNamePrefix = 'IMG_00'; // Awalan nama file
     const existingFiles = await RNFS.readdir(RNFS.DocumentDirectoryPath); // Mendapatkan daftar file yang ada
     let maxNumber = 0;
-    
+
     // Mencari nomor file terbesar
     existingFiles.forEach(file => {
       if (file.startsWith(fileNamePrefix)) {
@@ -189,11 +189,11 @@ const Files = ({navigation}) => {
         }
       }
     });
-  
+
     // Membuat nama file baru dengan nomor yang belum digunakan
     const newFileName = `${fileNamePrefix}${(maxNumber + 1).toString().padStart(3, '0')}.png`;
     const destinationPath = `${RNFS.DocumentDirectoryPath}/${newFileName}`; // Path untuk menyimpan gambar sebagai .png
-  
+
     try {
       // Membaca konten gambar
       const imageContent = await RNFS.readFile(sourcePath, 'base64');
@@ -211,7 +211,7 @@ const Files = ({navigation}) => {
     setModalMenu(false);
   };
 
-  const renderItem = ({item}) => (
+  const renderItem = ({ item }) => (
     <View className="w-full py-5 bg-white flex-row items-center justify-between px-4 border-b-2 border-b-slate-100 rounded-sm">
       <TouchableOpacity
         className="flex-row items-center"
@@ -234,16 +234,16 @@ const Files = ({navigation}) => {
           );
         }}>
         <View>
-        {item.isDirectory() ? (
-          <FontAwesome name="folder" size={24} color="#F8D775" />
-        ) : (
-          item.name.toLowerCase().endsWith('.jpg') || item.name.toLowerCase().endsWith('.png') ? (
-            <FontAwesome name="image" size={24} color="#87CEEB" />
+          {item.isDirectory() ? (
+            <FontAwesome name="folder" size={24} color="#F8D775" />
           ) : (
-            <FontAwesome name="file-text" size={24} color="gray" />
-          )
-        )}
-      </View>
+            item.name.toLowerCase().endsWith('.jpg') || item.name.toLowerCase().endsWith('.png') ? (
+              <FontAwesome name="image" size={24} color="#87CEEB" />
+            ) : (
+              <FontAwesome name="file-text" size={24} color="gray" />
+            )
+          )}
+        </View>
         <Text className="text-sm font-medium ml-4">{item.name}</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -274,7 +274,7 @@ const Files = ({navigation}) => {
     <View className="flex-1 bg-slate-100">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 10}}>
+        contentContainerStyle={{ paddingBottom: 10 }}>
         <ModalMenu
           show={modalMenu}
           onClose={handleCloseModal}
@@ -285,8 +285,8 @@ const Files = ({navigation}) => {
           resizeMode="cover"
           className=" h-44">
           <LinearGradient
-            start={{x: 0, y: 1}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
             colors={['rgba(9, 136, 224, 0.45)', 'rgba(5, 74, 122, 0.85)']}
             className="px-6 py-6 h-44">
             <Text className="text-white text-2xl font-bold">File Manager</Text>
@@ -302,7 +302,7 @@ const Files = ({navigation}) => {
                   className="bg-stone-900"
                 />
               </TouchableOpacity>
-              <View style={{flexDirection: 'column'}}>
+              <View style={{ flexDirection: 'column' }}>
                 <Text className="text-lg text-stone-900 capitalize">
                   {currentPath.split('/').pop()}
                 </Text>
@@ -310,7 +310,7 @@ const Files = ({navigation}) => {
             </View>
 
             <TouchableOpacity onPress={sortData}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text className="text-base text-stone-900 font-semibold pr-3">
                   {sortDirection === 'asc' ? 'Z - A' : 'A - Z'}
                 </Text>
@@ -334,8 +334,8 @@ const Files = ({navigation}) => {
       <View className="bottom-3 right-5 absolute flex-col">
         <TouchableOpacity onPress={() => setShowNewImageInput(true)}>
           <LinearGradient
-            start={{x: 0, y: 1}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
             colors={['#71C9EA', '#498AD7']}
             className="items-center justify-center rounded-full w-12 h-12 ">
             <AntDesign name="jpgfile1" size={24} color="white" />
@@ -344,8 +344,8 @@ const Files = ({navigation}) => {
 
         <TouchableOpacity onPress={() => setShowNewFileInput(true)}>
           <LinearGradient
-            start={{x: 0, y: 1}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
             colors={['#71C9EA', '#498AD7']}
             className="items-center justify-center rounded-full w-12 h-12 my-6">
             <AntDesign name="addfile" size={24} color="white" />
@@ -354,8 +354,8 @@ const Files = ({navigation}) => {
 
         <TouchableOpacity onPress={() => setShowNewFolderInput(true)}>
           <LinearGradient
-            start={{x: 0, y: 1}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
             colors={['#71C9EA', '#498AD7']}
             className="items-center justify-center rounded-full w-12 h-12">
             <AntDesign name="addfolder" size={24} color="white" />
@@ -364,50 +364,50 @@ const Files = ({navigation}) => {
       </View>
 
       {showNewImageInput && (
-         <Modal>
-         <View className=" flex flex-1 justify-end items-center bg-black/[.8] p-9">
-          <View className="w-full bg-slate-100 rounded-lg">
-            <View className="w-full py-4">
-              <Text className="text-center text-stone-900 text-base font-medium">
-                Select File Photo
-              </Text>
+        <Modal>
+          <View className=" flex flex-1 justify-end items-center bg-black/[.8] p-9">
+            <View className="w-full bg-slate-100 rounded-lg">
+              <View className="w-full py-4">
+                <Text className="text-center text-stone-900 text-base font-medium">
+                  Select File Photo
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  openCamera();
+                  setShowNewImageInput(false);
+                }}
+                className="w-full border-y-[1px] border-gray-300 py-3">
+                <Text className="text-center text-blue-600 text-lg font-semibold my-2">
+                  Take Photo
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  openImageLibrary();
+                  setShowNewImageInput(false);
+                }}
+                className="w-full py-4">
+                <Text className="text-center text-blue-600 text-lg font-semibold my-2">
+                  Choose from Gallery
+                </Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                openCamera();
-                setShowNewImageInput(false);
-              }}
-              className="w-full border-y-[1px] border-gray-300 py-3">
-              <Text className="text-center text-blue-600 text-lg font-semibold my-2">
-                Take Photo
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                openImageLibrary();
-                setShowNewImageInput(false);
-              }}
-              className="w-full py-4">
-              <Text className="text-center text-blue-600 text-lg font-semibold my-2">
-                Choose from Gallery
-              </Text>
-            </TouchableOpacity>
+            <View className="w-full bg-slate-100 rounded-lg my-5 py-3">
+              <TouchableOpacity onPress={() => setShowNewImageInput(false)}>
+                <Text className="text-center text-blue-600 text-lg font-semibold my-2">
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View className="w-full bg-slate-100 rounded-lg my-5 py-3">
-            <TouchableOpacity onPress={() => setShowNewImageInput(false)}>
-              <Text className="text-center text-blue-600 text-lg font-semibold my-2">
-                Cancel
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
         </Modal>
       )}
 
       {showNewFileInput && (
         <Modal>
           <View className=
-          " flex flex-1 justify-center items-center bg-black/[.8] p-9">
+            " flex flex-1 justify-center items-center bg-black/[.8] p-9">
             <View className="w-full bg-slate-100 rounded-lg p-4">
               <View className="w-full">
                 <Text className=" text-stone-900 text-lg font-medium">
@@ -419,6 +419,8 @@ const Files = ({navigation}) => {
                   New File Name
                 </Text>
                 <TextInput
+                  placeholderTextColor={'#007bff'}
+                  style={{ color: '#007bff' }}
                   className=""
                   placeholder="Enter file name"
                   value={fileName}
@@ -446,7 +448,7 @@ const Files = ({navigation}) => {
       )}
       {showNewFolderInput && (
         <Modal>
-         <View className=" flex flex-1 justify-center items-center bg-black/[.8] p-9">
+          <View className=" flex flex-1 justify-center items-center bg-black/[.8] p-9">
             <View className="w-full bg-slate-100 rounded-lg p-4">
               <View className="w-full">
                 <Text className=" text-stone-900 text-lg font-medium">
@@ -458,6 +460,8 @@ const Files = ({navigation}) => {
                   New Folder Name
                 </Text>
                 <TextInput
+                  placeholderTextColor={'#007bff'}
+                  style={{ color: '#007bff' }}
                   className=""
                   placeholder="Enter file name"
                   value={folderName}
