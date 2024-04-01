@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,19 +10,20 @@ import {
   ImageBackground,
   Alert,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
-import { ModalNewFolder } from './modal/ModalNewFolder';
-import { ModalAddFile } from './modal/ModalAddFile';
+import {ModalNewFolder} from './modal/ModalNewFolder';
+import {ModalAddFile} from './modal/ModalAddFile';
 import RNFS from 'react-native-fs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { ModalConvertFile } from './modal/ModalConvertFile';
-import { ModalImage } from './modal/ModalImage';
-import { ModalPdf } from './modal/ModalPdf';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {ModalConvertFile} from './modal/ModalConvertFile';
+import {ModalImage} from './modal/ModalImage';
+import {ModalPdf} from './modal/ModalPdf';
 
-export default function Home({ navigation }) {
+export default function Home({navigation}) {
   const [currentPath, setCurrentPath] = useState(RNFS.DocumentDirectoryPath);
   const [folders, setFolders] = useState([]);
   const [folderName, setFolderName] = useState('');
@@ -33,11 +34,21 @@ export default function Home({ navigation }) {
   const [modalFolder, setModalFolder] = useState(false);
   const [modalFile, setModalFile] = useState(false);
   const [modalConvert, setModalConvert] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [filteredFolders, setFilteredFolders] = useState([]);
+  const [img, setImg] = useState('');
 
   useEffect(() => {
     getAllFolders(currentPath);
   }, [currentPath]);
 
+  useEffect(() => {
+    filterFolders();
+  }, [folders, searchText]);
+
+  useEffect(() => {
+    setSearchText('');
+  }, [img]);
 
   const getAllFolders = path => {
     RNFS.readDir(path)
@@ -47,6 +58,17 @@ export default function Home({ navigation }) {
       .catch(error => {
         console.error('Error reading folder:', error);
       });
+  };
+
+  const filterFolders = () => {
+    if (searchText.trim() === '') {
+      setFilteredFolders(folders);
+    } else {
+      const filtered = folders.filter(item =>
+        item.name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setFilteredFolders(filtered);
+    }
   };
 
   const createFolder = () => {
@@ -85,20 +107,33 @@ export default function Home({ navigation }) {
       });
   };
 
-
-
   const navigateBack = () => {
-    // Define the root directory path
-    const rootDirectoryPath = '/data/user/0/com.file_manager_app';
-    // Remove the last part of the current path to navigate to the parent directory
-    const parentPath = currentPath.split('/').slice(0, -1).join('/');
-    // Check if the parentPath is at the root directory
-    if (parentPath === rootDirectoryPath) {
-      // If at root directory, disable back navigation
+    // Define the stop directory path
+    const stopDirectoryPath = '/data/user/0/com.arsipkuu/files';
+
+    // If currentPath is already at stop directory, do nothing
+    if (currentPath === stopDirectoryPath) {
       return;
     }
-    // Otherwise, navigate to the parent directory
-    setCurrentPath(parentPath);
+
+    // Define the root directory path
+    const rootDirectoryPath = '/data/user/0/com.arsipkuu';
+
+    // Remove the last part of the current path to navigate to the parent directory
+    const parentPath = currentPath.split('/').slice(0, -1).join('/');
+
+    // If the parent path is the root directory path, set currentPath to stop directory
+    if (parentPath === rootDirectoryPath) {
+      setCurrentPath(stopDirectoryPath);
+      console.log('Entered folder:', stopDirectoryPath); // Log saat tombol back berhenti di stop directory
+    } else {
+      // Otherwise, navigate to the parent directory
+      setCurrentPath(parentPath);
+      console.log('Entered folder:', parentPath); // Log saat tombol back ditekan
+    }
+
+    // Reset search text when navigating back
+    setSearchText('');
   };
 
   const sortData = () => {
@@ -211,7 +246,7 @@ export default function Home({ navigation }) {
     const seconds = currentDate.getSeconds().toString().padStart(2, '0');
     const newFileName = `${fileNamePrefix}${seconds}.pdf`;
     const destinationPath = `${folderPath}/${newFileName}`;
-  
+
     try {
       const isFileExists = await RNFS.exists(destinationPath);
       let finalDestinationPath = destinationPath;
@@ -223,10 +258,10 @@ export default function Home({ navigation }) {
         }
         finalDestinationPath = `${folderPath}/${uniqueFileName}`;
       }
-  
+
       await RNFS.moveFile(pdfFilePath, finalDestinationPath);
       console.log('PDF file saved:', finalDestinationPath); // Print the saved PDF file path
-  
+
       const pdfFile = {
         name: finalDestinationPath.split('/').pop(),
         path: finalDestinationPath,
@@ -237,21 +272,25 @@ export default function Home({ navigation }) {
       console.error('Error saving PDF file:', error);
     }
     setModalConvert(false);
-  };  
-  
-  const [img, setImg] = useState('')
+  };
+
   const navigateToFolder = item => {
     if (item.isDirectory()) {
       setCurrentPath(item.path);
+      console.log('Entered folder:', item.path);
+      setSearchText('');
     } else if (item.name.toLowerCase().endsWith('.pdf')) {
-      // Tambahkan logika untuk membuka file PDF di sini
-      navigation.navigate('PdfViewer', { pdfPath: item.path });
-    } else if (item.name.toLowerCase().endsWith('.jpg') || item.name.toLowerCase().endsWith('.png')) {
+      navigation.navigate('PdfViewer', {pdfPath: item.path});
+      setSearchText('');
+    } else if (
+      item.name.toLowerCase().endsWith('.jpg') ||
+      item.name.toLowerCase().endsWith('.png')
+    ) {
       setImg(item.path);
     }
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <TouchableOpacity
         style={styles.itemContainer}
@@ -277,7 +316,8 @@ export default function Home({ navigation }) {
           <View style={styles.iconContainer}>
             {item.isDirectory() ? (
               <FontAwesome name="folder" size={24} color="#F8D775" />
-            ) : item.name.toLowerCase().endsWith('.jpg') || item.name.toLowerCase().endsWith('.png') ? (
+            ) : item.name.toLowerCase().endsWith('.jpg') ||
+              item.name.toLowerCase().endsWith('.png') ? (
               <FontAwesome name="image" size={20} color="#87CEEB" />
             ) : item.name.toLowerCase().endsWith('.pdf') ? (
               <FontAwesome name="file-pdf-o" size={24} color="red" />
@@ -313,100 +353,115 @@ export default function Home({ navigation }) {
         onClose={() => setModalConvert(false)}
         onConvertSuccess={onConvertSuccess}
       />
-          <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.scrollViewContainer}>
-      <ImageBackground
-        source={require('../assets/images/ArsipBg.png')}
-        resizeMode="cover"
-        style={styles.imageBackground}>
-        <Image
-          source={require('../assets/images/ArsipkuWhite.png')}
-          style={styles.logo}
-        />
-      </ImageBackground>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContainer}>
+        <ImageBackground
+          source={require('../assets/images/ArsipBg.png')}
+          resizeMode="cover"
+          style={styles.imageBackground}>
+          <Image
+            source={require('../assets/images/ArsipkuWhite.png')}
+            style={styles.logo}
+          />
+          <View style={styles.searchFilter}>
+            <View style={styles.searchInputContainer}>
+              <AntDesign name="search1" size={20} color="gray" />
 
-      <View style={styles.buttonContainer}>
-        <View style={styles.buttonColumn}>
-          <TouchableOpacity
-            onPress={() => {
-              setModalFolder(true);
-            }}>
-            <LinearGradient
-              start={{ x: 0, y: 1 }}
-              end={{ x: 1, y: 0 }}
-              colors={['#F5C62C', '#FD5B4B']}
-              style={styles.button}>
-              <AntDesign name="addfolder" size={24} color="white" />
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <Text style={styles.buttonText}>New Folder</Text>
-        </View>
-        <View style={styles.buttonColumn}>
-          <TouchableOpacity
-            onPress={() => {
-              setModalFile(true);
-            }}>
-            <LinearGradient
-              start={{ x: 0, y: 1 }}
-              end={{ x: 1, y: 0 }}
-              colors={['#D8E474', '#62C654']}
-              style={styles.button}>
-              <FontAwesome name="file-photo-o" size={24} color="white" />
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <Text style={styles.buttonText}>Add Photo</Text>
-        </View>
-        <View style={styles.buttonColumn}>
-          <TouchableOpacity
-            onPress={() => {
-              setModalConvert(true);
-            }}>
-            <LinearGradient
-              start={{ x: 0, y: 1 }}
-              end={{ x: 1, y: 0 }}
-              colors={['#8FF8D4', '#16AAFB']}
-              style={styles.button}>
-              <AntDesign name="pdffile1" size={24} color="white" />
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <Text style={styles.buttonText}>Convert PDF</Text>
-        </View>
-      </View>
-
-      <View style={styles.contentContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={navigateBack}>
-            <AntDesign name="arrowleft" size={24} style={styles.backIcon} />
-          </TouchableOpacity>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              {currentPath.split('/').pop()}
-            </Text>
-          </View>
-          <TouchableOpacity onPress={sortData}>
-            <View style={styles.sortContainer}>
-              <Text style={styles.sortText}>
-                {sortDirection === 'asc' ? 'Z - A' : 'A - Z'}
-              </Text>
-              <AntDesign
-                name={sortDirection === 'asc' ? 'caretdown' : 'caretup'}
-                size={16}
-                style={styles.sortIcon}
+              <TextInput
+                placeholder="Search File..."
+                style={styles.searchInput}
+                value={searchText}
+                onChangeText={text => setSearchText(text)}
               />
+              {searchText !== '' && ( // Show cancel button if searchText is not empty
+                <TouchableOpacity onPress={() => setSearchText('')}>
+                  <AntDesign name="close" size={20} color="gray" />
+                </TouchableOpacity>
+              )}
             </View>
-          </TouchableOpacity>
+          </View>
+        </ImageBackground>
+
+        <View style={styles.buttonContainer}>
+          <View style={styles.buttonColumn}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalFolder(true);
+              }}>
+              <LinearGradient
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
+                colors={['#F5C62C', '#FD5B4B']}
+                style={styles.button}>
+                <AntDesign name="addfolder" size={24} color="white" />
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <Text style={styles.buttonText}>New Folder</Text>
+          </View>
+          <View style={styles.buttonColumn}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalFile(true);
+              }}>
+              <LinearGradient
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
+                colors={['#D8E474', '#62C654']}
+                style={styles.button}>
+                <FontAwesome name="file-photo-o" size={24} color="white" />
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <Text style={styles.buttonText}>Add Photo</Text>
+          </View>
+          <View style={styles.buttonColumn}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalConvert(true);
+              }}>
+              <LinearGradient
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
+                colors={['#8FF8D4', '#16AAFB']}
+                style={styles.button}>
+                <AntDesign name="pdffile1" size={24} color="white" />
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <Text style={styles.buttonText}>Convert PDF</Text>
+          </View>
         </View>
 
-        <FlatList
-          data={folders}
-          renderItem={renderItem}
-          keyExtractor={item => item.path}
-        />
-      </View>
+        <View style={styles.contentContainer}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity style={styles.backButton} onPress={navigateBack}>
+              <AntDesign name="arrowleft" size={24} style={styles.backIcon} />
+            </TouchableOpacity>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>{currentPath.split('/').pop()}</Text>
+            </View>
+            <TouchableOpacity onPress={sortData}>
+              <View style={styles.sortContainer}>
+                <Text style={styles.sortText}>
+                  {sortDirection === 'asc' ? 'Z - A' : 'A - Z'}
+                </Text>
+                <AntDesign
+                  name={sortDirection === 'asc' ? 'caretdown' : 'caretup'}
+                  size={16}
+                  style={styles.sortIcon}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            data={filteredFolders}
+            renderItem={renderItem}
+            keyExtractor={item => item.path}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -424,7 +479,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 24,
     height: 176,
-    
   },
   logo: {
     width: 106,
@@ -438,12 +492,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { 
+    shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25, 
-    shadowRadius: 3.84, 
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     elevation: 5,
   },
   buttonColumn: {
@@ -475,9 +529,7 @@ const styles = StyleSheet.create({
   backButton: {
     paddingHorizontal: 16,
   },
-  backIcon: {
-
-  },
+  backIcon: {},
   titleContainer: {
     flexDirection: 'column',
   },
@@ -496,9 +548,7 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     color: '#696969',
   },
-  sortIcon: {
-
-  },
+  sortIcon: {},
   itemContainer: {
     width: '100%',
     paddingVertical: 16,
@@ -520,5 +570,30 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  searchFilter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 50,
+  },
+  searchInputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingLeft: 10,
+    width: '100%',
+    height: 45,
+    backgroundColor: '#F6F8FF',
+    borderRadius: 8,
+  },
+  searchButton: {
+    marginLeft: 10,
+  },
+  searchInput: {
+    marginLeft: 10,
+    fontSize: 14,
+    fontWeight: '400',
+    width: '80%',
   },
 });
