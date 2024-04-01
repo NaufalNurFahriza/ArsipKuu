@@ -55,7 +55,6 @@ const Register = ({ navigation }) => {
               placeholder="Masukkan Nama"
               onChangeText={text => setName(text)}
               style={styles.input}
-              placeholderTextColor='#555'
               keyboardType="default"
             />
             <Text style={styles.label}>Email</Text>
@@ -63,7 +62,6 @@ const Register = ({ navigation }) => {
               placeholder="Masukkan Email"
               onChangeText={text => setEmail(text)}
               style={styles.input}
-              placeholderTextColor='#555'
               keyboardType="email-address"
             />
             <Text style={styles.label}>Password</Text>
@@ -72,14 +70,12 @@ const Register = ({ navigation }) => {
               onChangeText={text => setPassword(text)}
               secureTextEntry={true}
               style={styles.input}
-              placeholderTextColor='#555'
             />
             <Text style={styles.label}>Phone Number</Text>
             <TextInput
               placeholder="Masukkan Nomor Handphone"
               onChangeText={text => setPhoneNumber(text)}
               style={styles.input}
-              placeholderTextColor='#555'
               keyboardType="numeric"
             />
             <TouchableOpacity
@@ -139,7 +135,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginVertical: 12,
     fontSize: 16,
-    fontWeight: '500'
   },
   button: {
     width: '100%',
