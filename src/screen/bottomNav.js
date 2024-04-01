@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack'; // Import TransitionPresets
 import Profile from './Profile';
 import Files from './Files';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -74,7 +75,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   );
 }
 
-function MyTabs(params) {
+function MyTabs() {
   return (
     <Tab.Navigator
       tabBar={props => <MyTabBar {...props} />}
@@ -85,6 +86,22 @@ function MyTabs(params) {
       {/* <Tab.Screen name="Files" component={Files} /> */}
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
+  );
+}
+
+const Stack = createStackNavigator(); // Create Stack navigator
+
+function MainTabs() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Tabs"
+      screenOptions={{
+        headerShown: false,
+        ...TransitionPresets.SlideFromRightIOS, // Use TransitionPresets
+      }}
+    >
+      <Stack.Screen name="Tabs" component={MyTabs} />
+    </Stack.Navigator>
   );
 }
 
@@ -107,4 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyTabs;
+export default MainTabs;
