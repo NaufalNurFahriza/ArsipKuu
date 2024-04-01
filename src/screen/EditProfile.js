@@ -87,6 +87,7 @@ export default function EditProfile({ navigation }) {
               defaultValue={loginData.name}
               onChangeText={Text => setName(Text)}
               style={styles.input}
+              placeholderTextColor='#555'
               keyboardType="default"
             />
           </View>
@@ -98,6 +99,7 @@ export default function EditProfile({ navigation }) {
               defaultValue={loginData.email}
               onChangeText={Text => setEmail(Text)}
               style={styles.input}
+              placeholderTextColor='#555'
               keyboardType="email-address"
             />
           </View>
@@ -109,6 +111,7 @@ export default function EditProfile({ navigation }) {
               defaultValue={loginData.phoneNumber}
               onChangeText={Text => setPhoneNumber(Text)}
               style={styles.input}
+              placeholderTextColor='#555'
               keyboardType="numeric"
             />
           </View>
@@ -205,6 +208,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#f8fafb',
     paddingHorizontal: 12,
+    fontWeight: '500',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
   saveButton: {
     width: '100%',
