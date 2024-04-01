@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,21 +14,19 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
-import { ModalNewFolder } from './modal/ModalNewFolder';
-import { ModalAddFile } from './modal/ModalAddFile';
+import {ModalNewFolder} from './modal/ModalNewFolder';
+import {ModalAddFile} from './modal/ModalAddFile';
 import RNFS from 'react-native-fs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { ModalConvertFile } from './modal/ModalConvertFile';
-import { ModalImage } from './modal/ModalImage';
-import { ModalPdf } from './modal/ModalPdf';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {ModalConvertFile} from './modal/ModalConvertFile';
+import {ModalImage} from './modal/ModalImage';
+import {ModalPdf} from './modal/ModalPdf';
 
-export default function Home({ navigation }) {
+export default function Home({navigation}) {
   const [currentPath, setCurrentPath] = useState(RNFS.DocumentDirectoryPath);
   const [folders, setFolders] = useState([]);
   const [folderName, setFolderName] = useState('');
-  const [showNewFileInput, setShowNewFileInput] = useState(false);
-  const [fileName, setFileName] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
 
   const [modalFolder, setModalFolder] = useState(false);
@@ -81,19 +79,6 @@ export default function Home({ navigation }) {
       })
       .catch(error => {
         console.error('Error creating folder:', error);
-      });
-  };
-
-  const createFile = () => {
-    const filePath = `${currentPath}/${fileName}`;
-    const fileContent = 'This is a sample file content.';
-    RNFS.writeFile(filePath, fileContent, 'utf8')
-      .then(() => {
-        getAllFolders(currentPath);
-        console.log('File created successfully!');
-      })
-      .catch(error => {
-        console.error('Error creating file:', error);
       });
   };
 
@@ -280,7 +265,7 @@ export default function Home({ navigation }) {
       console.log('Entered folder:', item.path);
       setSearchText('');
     } else if (item.name.toLowerCase().endsWith('.pdf')) {
-      navigation.navigate('PdfViewer', { pdfPath: item.path });
+      navigation.navigate('PdfViewer', {pdfPath: item.path});
       setSearchText('');
     } else if (
       item.name.toLowerCase().endsWith('.jpg') ||
@@ -290,44 +275,52 @@ export default function Home({ navigation }) {
     }
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
-      <TouchableOpacity
-        style={styles.itemContainer}
-        onPress={() => navigateToFolder(item)}
-        onLongPress={() => {
-          Alert.alert(
-            `Delete ${item.isDirectory() ? 'Folder' : 'File'}`,
-            `Are you sure you want to delete ${item.name}?`,
-            [
-              {
-                text: 'Cancel',
-                style: 'cancel',
-              },
-              {
-                text: 'Delete',
-                onPress: () => deleteDir(item.path),
-                style: 'destructive',
-              },
-            ],
-          );
-        }}>
-        <View style={styles.itemContent}>
-          <View style={styles.iconContainer}>
-            {item.isDirectory() ? (
-              <FontAwesome name="folder" size={24} color="#F8D775" />
-            ) : item.name.toLowerCase().endsWith('.jpg') ||
-              item.name.toLowerCase().endsWith('.png') ? (
-              <FontAwesome name="image" size={20} color="#87CEEB" />
-            ) : item.name.toLowerCase().endsWith('.pdf') ? (
-              <FontAwesome name="file-pdf-o" size={24} color="red" />
-            ) : (
-              <FontAwesome name="file-text" size={24} color="gray" />
-            )}
+      <View style={styles.itemContainer}>
+        <TouchableOpacity
+          onPress={() => navigateToFolder(item)}
+          onLongPress={() => {
+            Alert.alert(
+              `Delete ${item.isDirectory() ? 'Folder' : 'File'}`,
+              `Are you sure you want to delete ${item.name}?`,
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Delete',
+                  onPress: () => deleteDir(item.path),
+                  style: 'destructive',
+                },
+              ],
+            );
+          }}>
+          <View style={styles.itemContent}>
+            <View style={styles.iconContainer}>
+              {item.isDirectory() ? (
+                <FontAwesome name="folder" size={24} color="#F8D775" />
+              ) : item.name.toLowerCase().endsWith('.jpg') ||
+                item.name.toLowerCase().endsWith('.png') ? (
+                <FontAwesome name="image" size={20} color="#87CEEB" />
+              ) : item.name.toLowerCase().endsWith('.pdf') ? (
+                <FontAwesome name="file-pdf-o" size={24} color="red" />
+              ) : (
+                <FontAwesome name="file-text" size={24} color="gray" />
+              )}
+            </View>
+            <Text style={styles.itemText}>{item.name}</Text>
           </View>
-          <Text style={styles.itemText}>{item.name}</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+        {item.name.toLowerCase().endsWith('.pdf') && (
+          <TouchableOpacity
+            style={styles.downloadIcon}
+            onPress={() => downloadPdf(item)}>
+            <AntDesign name="arrowdown" size={18} color="gray" />
+          </TouchableOpacity>
+        )}
+      </View>
     );
   };
 
@@ -391,8 +384,8 @@ export default function Home({ navigation }) {
                 setModalFolder(true);
               }}>
               <LinearGradient
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
                 colors={['#F5C62C', '#FD5B4B']}
                 style={styles.button}>
                 <AntDesign name="addfolder" size={24} color="white" />
@@ -407,8 +400,8 @@ export default function Home({ navigation }) {
                 setModalFile(true);
               }}>
               <LinearGradient
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
                 colors={['#D8E474', '#62C654']}
                 style={styles.button}>
                 <FontAwesome name="file-photo-o" size={24} color="white" />
@@ -423,8 +416,8 @@ export default function Home({ navigation }) {
                 setModalConvert(true);
               }}>
               <LinearGradient
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
                 colors={['#8FF8D4', '#16AAFB']}
                 style={styles.button}>
                 <AntDesign name="pdffile1" size={24} color="white" />
@@ -554,12 +547,13 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 16,
     backgroundColor: '#ffffff',
-    flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 20,
     borderBottomWidth: 3,
     borderBottomColor: '#f1f5f9',
     borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   itemContent: {
     flexDirection: 'row',
@@ -570,8 +564,12 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color:'#007bff',
+    fontWeight: '600',
+    color: '#322f2e',
+  },
+  downloadIcon: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
   },
   searchFilter: {
     flexDirection: 'row',
@@ -597,6 +595,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     width: '80%',
-    color:'#007bff'
+    color: '#007bff',
   },
 });
