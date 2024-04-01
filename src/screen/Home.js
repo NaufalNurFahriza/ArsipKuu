@@ -372,6 +372,7 @@ export default function Home({navigation}) {
                 placeholder="Search File..."
                 style={styles.searchInput}
                 value={searchText}
+                placeholderTextColor='#555'
                 onChangeText={text => setSearchText(text)}
               />
               {searchText !== '' && ( // Show cancel button if searchText is not empty
@@ -593,7 +594,7 @@ const styles = StyleSheet.create({
   searchInput: {
     marginLeft: 10,
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: '500',
     width: '80%',
   },
 });

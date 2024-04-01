@@ -52,6 +52,7 @@ const Login = ({ navigation, route }) => {
               placeholder="Masukkan Email"
               onChangeText={text => setEmail(text)}
               style={styles.input}
+              placeholderTextColor='#555'
               keyboardType="email-address"
             />
             <Text style={styles.label}>Password</Text>
@@ -60,6 +61,7 @@ const Login = ({ navigation, route }) => {
               secureTextEntry={true}
               onChangeText={text => setPassword(text)}
               style={styles.input}
+              placeholderTextColor='#555'
             />
             <TouchableOpacity
               style={styles.button}
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginVertical: 12,
     fontSize: 16,
+    fontWeight: '500'
   },
   button: {
     width: '100%',
