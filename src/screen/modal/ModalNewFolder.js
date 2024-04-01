@@ -12,6 +12,7 @@ export const ModalNewFolder = ({ show, onClose, folderName, setFolderName, creat
           <View style={styles.modalInputContainer}>
             <Text style={styles.modalInputLabel}>New Folder Name</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="Enter New Folder"
               value={folderName}
               onChangeText={text => setFolderName(text)}
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#3b82f6',
+    color: '#007bff'
   },
   modalButtonContainer: {
     flexDirection: 'row',

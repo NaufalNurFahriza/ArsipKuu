@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -14,16 +14,16 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
-import {ModalNewFolder} from './modal/ModalNewFolder';
-import {ModalAddFile} from './modal/ModalAddFile';
+import { ModalNewFolder } from './modal/ModalNewFolder';
+import { ModalAddFile } from './modal/ModalAddFile';
 import RNFS from 'react-native-fs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {ModalConvertFile} from './modal/ModalConvertFile';
-import {ModalImage} from './modal/ModalImage';
-import {ModalPdf} from './modal/ModalPdf';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { ModalConvertFile } from './modal/ModalConvertFile';
+import { ModalImage } from './modal/ModalImage';
+import { ModalPdf } from './modal/ModalPdf';
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
   const [currentPath, setCurrentPath] = useState(RNFS.DocumentDirectoryPath);
   const [folders, setFolders] = useState([]);
   const [folderName, setFolderName] = useState('');
@@ -280,7 +280,7 @@ export default function Home({navigation}) {
       console.log('Entered folder:', item.path);
       setSearchText('');
     } else if (item.name.toLowerCase().endsWith('.pdf')) {
-      navigation.navigate('PdfViewer', {pdfPath: item.path});
+      navigation.navigate('PdfViewer', { pdfPath: item.path });
       setSearchText('');
     } else if (
       item.name.toLowerCase().endsWith('.jpg') ||
@@ -290,7 +290,7 @@ export default function Home({navigation}) {
     }
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={styles.itemContainer}
@@ -369,10 +369,10 @@ export default function Home({navigation}) {
               <AntDesign name="search1" size={20} color="gray" />
 
               <TextInput
+                placeholderTextColor={'#007bff'}
                 placeholder="Search File..."
                 style={styles.searchInput}
                 value={searchText}
-                placeholderTextColor='#555'
                 onChangeText={text => setSearchText(text)}
               />
               {searchText !== '' && ( // Show cancel button if searchText is not empty
@@ -391,8 +391,8 @@ export default function Home({navigation}) {
                 setModalFolder(true);
               }}>
               <LinearGradient
-                start={{x: 0, y: 1}}
-                end={{x: 1, y: 0}}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
                 colors={['#F5C62C', '#FD5B4B']}
                 style={styles.button}>
                 <AntDesign name="addfolder" size={24} color="white" />
@@ -407,8 +407,8 @@ export default function Home({navigation}) {
                 setModalFile(true);
               }}>
               <LinearGradient
-                start={{x: 0, y: 1}}
-                end={{x: 1, y: 0}}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
                 colors={['#D8E474', '#62C654']}
                 style={styles.button}>
                 <FontAwesome name="file-photo-o" size={24} color="white" />
@@ -423,8 +423,8 @@ export default function Home({navigation}) {
                 setModalConvert(true);
               }}>
               <LinearGradient
-                start={{x: 0, y: 1}}
-                end={{x: 1, y: 0}}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
                 colors={['#8FF8D4', '#16AAFB']}
                 style={styles.button}>
                 <AntDesign name="pdffile1" size={24} color="white" />
@@ -571,6 +571,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color:'#007bff',
   },
   searchFilter: {
     flexDirection: 'row',
@@ -596,5 +597,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     width: '80%',
+    color:'#007bff'
   },
 });
