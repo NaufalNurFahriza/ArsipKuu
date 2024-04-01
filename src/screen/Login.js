@@ -50,6 +50,7 @@ const Login = ({ navigation, route }) => {
             <Text style={styles.label}>Email</Text>
             <TextInput
               placeholder="Masukkan Email"
+              placeholderTextColor={'#007bff'}
               onChangeText={text => setEmail(text)}
               style={styles.input}
               keyboardType="email-address"
@@ -57,6 +58,7 @@ const Login = ({ navigation, route }) => {
             <Text style={styles.label}>Password</Text>
             <TextInput
               placeholder="Masukkan Password"
+              placeholderTextColor={'#007bff'}
               secureTextEntry={true}
               onChangeText={text => setPassword(text)}
               style={styles.input}
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginVertical: 12,
     fontSize: 16,
+    color: '#007bff',
   },
   button: {
     width: '100%',

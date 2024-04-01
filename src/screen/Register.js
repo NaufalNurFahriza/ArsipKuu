@@ -52,6 +52,7 @@ const Register = ({ navigation }) => {
             </Text>
             <Text style={styles.label}>Name</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="Masukkan Nama"
               onChangeText={text => setName(text)}
               style={styles.input}
@@ -59,6 +60,7 @@ const Register = ({ navigation }) => {
             />
             <Text style={styles.label}>Email</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="Masukkan Email"
               onChangeText={text => setEmail(text)}
               style={styles.input}
@@ -66,6 +68,7 @@ const Register = ({ navigation }) => {
             />
             <Text style={styles.label}>Password</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="Masukkan Password"
               onChangeText={text => setPassword(text)}
               secureTextEntry={true}
@@ -73,6 +76,7 @@ const Register = ({ navigation }) => {
             />
             <Text style={styles.label}>Phone Number</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="Masukkan Nomor Handphone"
               onChangeText={text => setPhoneNumber(text)}
               style={styles.input}
@@ -135,6 +139,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginVertical: 12,
     fontSize: 16,
+    color: '#007bff',
   },
   button: {
     width: '100%',

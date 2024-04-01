@@ -83,6 +83,7 @@ export default function EditProfile({ navigation }) {
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Nama</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="Name"
               defaultValue={loginData.name}
               onChangeText={Text => setName(Text)}
@@ -94,6 +95,7 @@ export default function EditProfile({ navigation }) {
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Email</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="Email@gmail.com"
               defaultValue={loginData.email}
               onChangeText={Text => setEmail(Text)}
@@ -105,6 +107,7 @@ export default function EditProfile({ navigation }) {
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Phone Number</Text>
             <TextInput
+              placeholderTextColor={'#007bff'}
               placeholder="080040008000"
               defaultValue={loginData.phoneNumber}
               onChangeText={Text => setPhoneNumber(Text)}
@@ -205,6 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#f8fafb',
     paddingHorizontal: 12,
+    color: '#007bff'
   },
   saveButton: {
     width: '100%',
