@@ -21,6 +21,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {ModalConvertFile} from './modal/ModalConvertFile';
 import {ModalImage} from './modal/ModalImage';
+import { PermissionsAndroid } from 'react-native';
 import {ModalPdf} from './modal/ModalPdf';
 
 export default function Home({navigation}) {
@@ -257,6 +258,21 @@ export default function Home({navigation}) {
       console.error('Error saving PDF file:', error);
     }
     setModalConvert(false);
+  };
+
+  const downloadPdf = async (item) => {
+    const downloadPath = '/storage/emulated/0/download';
+    const fileName = item.name.split('/').pop(); // Mendapatkan nama file dari URI
+    const localFilePath = `${downloadPath}/${fileName}`;
+  
+    try {
+      await RNFS.copyFile(item.path, localFilePath);
+      console.log('File downloaded to:', localFilePath);
+      Alert.alert('Success', 'PDF downloaded successfully');
+    } catch (error) {
+      console.error('Download error:', error);
+      Alert.alert('Error', 'Failed to download PDF');
+    }
   };
 
   const navigateToFolder = item => {
